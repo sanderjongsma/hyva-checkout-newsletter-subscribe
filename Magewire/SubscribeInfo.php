@@ -34,8 +34,12 @@ class SubscribeInfo extends Component
         $this->hasSubscription = $this->checkoutSession->getData(self::HAS_SUBSCRIPTION) ?? false;
     }
 
-    public function hideIfHasSubscription(string $email): void
+    public function hideIfHasSubscription(?string $email): void
     {
+        if (!$email) {
+            return;
+        }
+
         $value = $this->guestSubscriptionChecker->isSubscribed($email);
         $this->checkoutSession->setData(self::HAS_SUBSCRIPTION, $value);
         $this->hasSubscription = $value;

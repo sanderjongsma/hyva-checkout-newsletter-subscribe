@@ -17,14 +17,18 @@ class HideSubscribeInfoModifier implements EntityFormModifierInterface
     {
         $form->registerModificationListener(
             'hide_subscribe_info_if_has_subscription',
-            'form:shipping:email:updated',
+            'form:data:updated:magewire',
             function (
                 EntityFormInterface $form,
-                EntityFieldInterface $field,
-                MagewireAddressFormInterface $addressComponent
+                \Hyva\Checkout\Magewire\Checkout\GuestDetails $guestDetailsComponent,
             ) {
-                /** @var Component $addressComponent */
-                $addressComponent->emit('subscribe_info_email_address_updated', $field->getValue());
+                $emailAddress = $form->getField('email_address');
+                if (!$emailAddress) {
+                    return $form;
+                }
+
+                $guestDetailsComponent->emit('subscribe_info_email_address_updated', $emailAddress->getValue());
+
                 return $form;
             }
         );
